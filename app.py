@@ -56,7 +56,7 @@ st.sidebar.title("Configurações")
 # Dicionário que mapeia nomes amigáveis para os nomes de API corretos
 model_mapping = {
     "Gemini 2.0 Flash (Padrão)": "gemini-2.0-flash",
-    "Gemma 3 27B": "gemma-3-27b-it",
+    "Gemma 3n e4B": "gemma-3n-e4b-it",
     "Gemini 2.5 Pro (Em breve)": "disabled"
 }
 model_options = list(model_mapping.keys())
@@ -115,6 +115,10 @@ if PROMPT_MESTRE and submit_button:
                 
                 st.subheader("Resultado da Análise Crítica:")
                 st.markdown(response.text)
+
+                # <<< MUDANÇA 2: Envelopar o resultado em um container com borda >>>
+                with st.container(border=True):
+                    st.markdown(response.text)
 
             except Exception as e:
                 st.error(f"Ocorreu um erro ao chamar a API do Gemini: {e}")
