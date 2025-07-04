@@ -73,7 +73,7 @@ st.sidebar.info("A seleção do modelo impacta a velocidade e a qualidade da an�
 prompt_usuario = st.text_area(
     "Instruções Adicionais (Opcional):",
     height=100,
-    placeholder="O prompt principal já está configurado. Use este campo para focar a análise em um ponto específico. Ex: 'Foque apenas na análise de viés de seleção' ou 'Compare os resultados com o estudo de Smith et al. 2022'."
+    placeholder="Analise o artigo em anexo."
 )
 uploaded_file = st.file_uploader("Faça o upload do seu artigo em PDF aqui:", type=["pdf"])
 submit_button = st.button("Analisar Artigo")
