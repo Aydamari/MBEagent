@@ -81,14 +81,14 @@ st.caption("Desenvolvido por Igor Eckert & Aydamari Faria-Jr")
 st.sidebar.title("Configurações")
 
 model_mapping = {
-    "Gemini 2.0 Flash (Padrão)": "gemini-2.0-flash",
+    "Gemini 2.0 Flash": "gemini-2.0-flash",
     "Gemini 2.5 Flash": "gemini-2.5-flash-preview-04-17",
     "Gemini 2.5 Pro (Em breve)": "disabled"
 }
 model_options = list(model_mapping.keys())
 
 selected_model_name = st.sidebar.selectbox(
-    "Escolha o modelo de IA:", options=model_options, index=0
+    "Escolha o modelo de IA:", options=model_options, index=1
 )
 st.sidebar.info("A seleção do modelo impacta a velocidade e a qualidade da análise. O Gemini 2.5 Pro será habilitado no futuro.")
 
