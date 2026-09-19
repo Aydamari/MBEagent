@@ -1,9 +1,8 @@
 # --- START OF FILE app.py ---
 
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 import PyPDF2 as pdf
-import os
 
 # --- FUNÇÃO AUXILIAR ---
 
@@ -27,7 +26,7 @@ def extract_text_from_pdf(uploaded_file):
 try:
     PROMPT_MESTRE = st.secrets["MASTER_PROMPT"]
     API_KEY = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=API_KEY)
+    client = genai.Client(api_key=API_KEY)
 except (KeyError, FileNotFoundError):
     st.error("ERRO: Segredos não configurados! Certifique-se de que 'GOOGLE_API_KEY' e 'MASTER_PROMPT' estão configurados nos segredos do seu app.")
     st.stop()
@@ -55,21 +54,21 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-st.header("🔬 Analisador de Artigos Científicos MBE/PBE_V4")
-st.caption("Desenvolvido por Igor Eckert & Aydamari Faria-Jr")
+st.header("🔬 Analisador de Artigos Científicos MBE/PBE_V5")
+st.caption("Desenvolvido por Igor Eckert & Aydamari Faria-Jr · Integrado ao ecossistema iaemedicina.com.br")
 
 # Barra Lateral com Configurações
 st.sidebar.title("Configurações")
 
 model_mapping = {
-    "Gemini 2.0 Flash": "gemini-2.0-flash",
     "Gemini 2.5 Flash": "gemini-2.5-flash",
-    "Gemini 2.5 Pro (Em breve)": "disabled"
+    "Gemini 2.5 Flash-Lite": "gemini-2.5-flash-lite",
+    "Gemini 2.5 Pro": "gemini-2.5-pro"
 }
 model_options = list(model_mapping.keys())
 
 selected_model_name = st.sidebar.selectbox(
-    "Escolha o modelo de IA:", options=model_options, index=1
+    "Escolha o modelo de IA:", options=model_options, index=0
 )
 st.sidebar.info("A seleção do modelo impacta a velocidade e a qualidade da análise.")
 
@@ -88,9 +87,7 @@ submit_button = st.button("Analisar Artigo")
 if PROMPT_MESTRE and submit_button:
     actual_model_id = model_mapping[selected_model_name]
 
-    if actual_model_id == "disabled":
-        st.warning("O modelo Gemini 2.5 Pro não está disponível. Por favor, selecione outro modelo.")
-    elif uploaded_file is None:
+    if uploaded_file is None:
         st.warning("Por favor, faça o upload de um arquivo PDF antes de analisar.")
     else:
         with st.spinner("Extraindo texto do PDF..."):
@@ -103,11 +100,13 @@ if PROMPT_MESTRE and submit_button:
 
             try:
                 with st.spinner(f"O modelo '{selected_model_name}' está processando a análise crítica..."):
-                    model = genai.GenerativeModel(actual_model_id)
-                    response = model.generate_content(prompt_final)
+                    response = client.models.generate_content(
+                        model=actual_model_id,
+                        contents=prompt_final
+                    )
 
                 st.subheader("Resultado da Análise Crítica")
-                
+
                 # Usa o container nativo do Streamlit para um visual limpo.
                 with st.container(border=True):
                     st.markdown(response.text)
