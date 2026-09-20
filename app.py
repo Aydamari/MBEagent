@@ -16,6 +16,10 @@ MODELOS = {
 }
 MODELO_PADRAO = "Gemini 3.8 Flash (mais recente)"
 
+# Temperatura baixa: prioriza fidelidade ao artigo e consistência da leitura crítica
+# (premissa de Reliability do roteiro MBE) em vez de criatividade.
+TEMPERATURA = 0.2
+
 # Protege a janela de contexto e o custo: artigos acima disso são truncados com aviso.
 LIMITE_CARACTERES = 400_000
 MINIMO_CARACTERES = 200  # abaixo disso, provável PDF escaneado (sem camada de texto)
@@ -139,7 +143,8 @@ if PROMPT_MESTRE and submit_button:
                 with st.spinner(f"O modelo '{selected_model_name}' está processando a análise crítica..."):
                     response = client.models.generate_content(
                         model=actual_model_id,
-                        contents=prompt_final
+                        contents=prompt_final,
+                        config=genai.types.GenerateContentConfig(temperature=TEMPERATURA),
                     )
 
                 resultado = (response.text or "").strip() if response is not None else ""
